@@ -40,13 +40,87 @@ namespace Mirror
     {
         public static void LogError(this ILogger logger, object message)
         {
-            logger.LogError(null, message);
+            logger.Log(LogType.Error, message);
+        }
+        public static void LogError(this ILogger logger, object message, Object context)
+        {
+            logger.Log(LogType.Error, message, context);
+        }
+        public static void LogErrorFormat(this ILogger logger, string format, params object[] args)
+        {
+            logger.LogFormat(LogType.Error, format, args);
+        }
+        public static void LogError(this ILogger logger, Object context, string format, params object[] args)
+        {
+            logger.LogFormat(LogType.Error, context, format, args);
+        }
+
+
+        [System.Diagnostics.Conditional("UNITY_ASSERTIONS")]
+        public static void Assert(this ILogger logger, bool condition, string message)
+        {
+            if (!condition)
+                logger.Log(LogType.Assert, message);
+        }
+        [System.Diagnostics.Conditional("UNITY_ASSERTIONS")]
+        public static void Assert(this ILogger logger, bool condition, string message, params object[] args)
+        {
+            if (!condition)
+                logger.LogFormat(LogType.Assert, message, args);
+        }
+        [System.Diagnostics.Conditional("UNITY_ASSERTIONS")]
+        public static void Assert(this ILogger logger, bool condition, string message, Object context)
+        {
+            if (!condition)
+                logger.Log(LogType.Assert, (object)message, context);
+        }
+        [System.Diagnostics.Conditional("UNITY_ASSERTIONS")]
+        public static void Assert(this ILogger logger, bool condition, Object context, string message, params object[] args)
+        {
+            if (!condition)
+                logger.LogFormat(LogType.Assert, context, message, args);
         }
 
         public static void LogWarning(this ILogger logger, object message)
         {
-            logger.LogWarning(null, message);
+            logger.Log(LogType.Warning, message);
         }
+        public static void LogWarning(this ILogger logger, object message, Object context)
+        {
+            logger.Log(LogType.Warning, message, context);
+        }
+        public static void LogWarningFormat(this ILogger logger, string format, params object[] args)
+        {
+            logger.LogFormat(LogType.Warning, format, args);
+        }
+        public static void LogWarningFormat(this ILogger logger, Object context, string format, params object[] args)
+        {
+            logger.LogFormat(LogType.Warning, context, format, args);
+        }
+
+
+        public static void Log(this ILogger logger, object message)
+        {
+            logger.Log(LogType.Log, message);
+        }
+        public static void Log(this ILogger logger, string message, Object context)
+        {
+            logger.Log(LogType.Log, (object)message, context);
+        }
+        public static void Log(this ILogger logger, object message, Object context)
+        {
+            logger.Log(LogType.Log, message, context);
+        }
+        public static void LogFormat(this ILogger logger, string format, params object[] args)
+        {
+            logger.LogFormat(LogType.Log, format, args);
+        }
+        public static void LogFormat(this ILogger logger, Object context, string format, params object[] args)
+        {
+            logger.LogFormat(LogType.Log, context, format, args);
+        }
+
+
 
         public static bool LogEnabled(this ILogger logger) => logger.IsLogTypeAllowed(LogType.Log);
     }

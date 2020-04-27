@@ -12,6 +12,8 @@ namespace Mirror.EditorScripts.Logging
 
             NetworkLogSettings target = this.target as NetworkLogSettings;
 
+            EditorGUILayout.Space();
+
             if (target.settings == null)
             {
                 LogSettings newSettings = LogLevelsGUI.DrawCreateNewButton();

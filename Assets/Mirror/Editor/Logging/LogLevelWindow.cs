@@ -38,6 +38,8 @@ namespace Mirror.EditorScripts.Logging
             EditorGUILayout.PropertyField(settingsProp);
             serializedObject.ApplyModifiedProperties();
 
+            EditorGUILayout.Space();
+
             if (settings == null)
             {
                 LogSettings newSettings = LogLevelsGUI.DrawCreateNewButton();

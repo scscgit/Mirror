@@ -10,6 +10,7 @@ namespace Mirror.EditorScripts.Logging
         public override void OnInspectorGUI()
         {
             CurrentScriptField();
+            EditorGUILayout.Space();
 
             LogLevelsGUI.DrawLogFactoryDictionary(target as LogSettings);
         }

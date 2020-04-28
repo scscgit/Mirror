@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,30 +6,27 @@ namespace Mirror
 {
     public static class LogFactory
     {
-        internal static readonly Dictionary<string, ILogger> loggers = new Dictionary<string, ILogger>();
+        internal static readonly Dictionary<string, IMirrorLogger> loggers = new Dictionary<string, IMirrorLogger>();
 
-        public static ILogger GetLogger<T>(LogType defaultLogLevel = LogType.Warning)
+        public static IMirrorLogger GetLogger<T>(LogType defaultLogLevel = LogType.Warning)
         {
             return GetLogger(typeof(T).Name, defaultLogLevel);
         }
 
-        public static ILogger GetLogger(System.Type type, LogType defaultLogLevel = LogType.Warning)
+        public static IMirrorLogger GetLogger(System.Type type, LogType defaultLogLevel = LogType.Warning)
         {
             return GetLogger(type.Name, defaultLogLevel);
         }
 
-        public static ILogger GetLogger(string loggerName, LogType defaultLogLevel = LogType.Warning)
+        public static IMirrorLogger GetLogger(string loggerName, LogType defaultLogLevel = LogType.Warning)
         {
-            if (loggers.TryGetValue(loggerName, out ILogger logger))
+            if (loggers.TryGetValue(loggerName, out IMirrorLogger logger))
             {
                 return logger;
             }
 
-            logger = new Logger(Debug.unityLogger)
-            {
-                // by default, log warnings and up
-                filterLogType = defaultLogLevel
-            };
+            // by default, log warnings and up
+            logger = new MirrorLogger(Debug.unityLogger, defaultLogLevel);
 
             loggers[loggerName] = logger;
             return logger;
@@ -38,90 +36,170 @@ namespace Mirror
 
     public static class ILoggerExtensions
     {
-        public static void LogError(this ILogger logger, object message)
+        public static bool LogEnabled(this IMirrorLogger logger) => logger.IsLogTypeAllowed(LogType.Log);
+    }
+
+    public interface IMirrorLogger
+    {
+        void Log(string msg);
+        void Log(string msg, UnityEngine.Object context);
+        void LogFormat(string msg, params object[] args);
+        void LogFormat(UnityEngine.Object context, string msg, params object[] args);
+
+        void LogWarning(string msg);
+        void LogWarning(string msg, UnityEngine.Object context);
+        void LogWarningFormat(string msg, params object[] args);
+        void LogWarningFormat(UnityEngine.Object context, string msg, params object[] args);
+
+        void LogError(string msg);
+        void LogError(string msg, UnityEngine.Object context);
+        void LogErrorFormat(string msg, params object[] args);
+        void LogErrorFormat(UnityEngine.Object context, string msg, params object[] args);
+
+        void Assert(bool condition, string msg);
+        void Assert(bool condition, string msg, UnityEngine.Object context);
+        void AssertFormat(bool condition, string msg, params object[] args);
+        void AssertFormat(bool condition, UnityEngine.Object context, string msg, params object[] args);
+
+        void LogException(Exception exception, UnityEngine.Object context = null);
+
+        bool IsLogTypeAllowed(LogType logType);
+        LogType filterLogType { get; set; }
+        ILogHandler logHandler { get; set; }
+    }
+
+    public class MirrorLogger : IMirrorLogger
+    {
+        public MirrorLogger(ILogHandler logHandler, LogType filterLogType)
         {
-            logger.Log(LogType.Error, message);
+            this.logHandler = logHandler ?? throw new ArgumentNullException(nameof(logHandler));
+            this.filterLogType = filterLogType;
         }
-        public static void LogError(this ILogger logger, object message, Object context)
+
+        public LogType filterLogType { get; set; }
+        public ILogHandler logHandler { get; set; }
+
+        void InternalAssert(UnityEngine.Object context, string format, object[] args)
         {
-            logger.Log(LogType.Error, message, context);
+            if (IsLogTypeAllowed(LogType.Assert))
+                logHandler.LogFormat(LogType.Assert, context, format, args);
         }
-        public static void LogErrorFormat(this ILogger logger, string format, params object[] args)
+
+        void InternalError(UnityEngine.Object context, string format, object[] args)
         {
-            logger.LogFormat(LogType.Error, format, args);
+            if (IsLogTypeAllowed(LogType.Error))
+                logHandler.LogFormat(LogType.Error, context, format, args);
         }
-        public static void LogError(this ILogger logger, Object context, string format, params object[] args)
+
+        void InternalWarning(UnityEngine.Object context, string format, object[] args)
         {
-            logger.LogFormat(LogType.Error, context, format, args);
+            if (IsLogTypeAllowed(LogType.Warning))
+                logHandler.LogFormat(LogType.Warning, context, format, args);
+        }
+
+        void InternalLog(UnityEngine.Object context, string format, object[] args)
+        {
+            if (IsLogTypeAllowed(LogType.Log))
+                logHandler.LogFormat(LogType.Log, context, format, args);
         }
 
 
-        [System.Diagnostics.Conditional("UNITY_ASSERTIONS")]
-        public static void Assert(this ILogger logger, bool condition, string message)
+        public bool IsLogTypeAllowed(LogType logType)
+        {
+            return filterLogType != LogType.Exception && logType <= filterLogType;
+        }
+
+
+        public void Assert(bool condition, string msg)
         {
             if (!condition)
-                logger.Log(LogType.Assert, message);
+                InternalAssert(null, msg, System.Array.Empty<object>());
         }
-        [System.Diagnostics.Conditional("UNITY_ASSERTIONS")]
-        public static void Assert(this ILogger logger, bool condition, string message, params object[] args)
+
+        public void Assert(bool condition, string msg, UnityEngine.Object context)
         {
             if (!condition)
-                logger.LogFormat(LogType.Assert, message, args);
+                InternalAssert(context, msg, System.Array.Empty<object>());
         }
-        [System.Diagnostics.Conditional("UNITY_ASSERTIONS")]
-        public static void Assert(this ILogger logger, bool condition, string message, Object context)
+
+        public void AssertFormat(bool condition, string msg, params object[] args)
         {
             if (!condition)
-                logger.Log(LogType.Assert, (object)message, context);
+                InternalAssert(null, msg, args);
         }
-        [System.Diagnostics.Conditional("UNITY_ASSERTIONS")]
-        public static void Assert(this ILogger logger, bool condition, Object context, string message, params object[] args)
+
+        public void AssertFormat(bool condition, UnityEngine.Object context, string msg, params object[] args)
         {
             if (!condition)
-                logger.LogFormat(LogType.Assert, context, message, args);
-        }
-
-        public static void LogWarning(this ILogger logger, object message)
-        {
-            logger.Log(LogType.Warning, message);
-        }
-        public static void LogWarning(this ILogger logger, object message, Object context)
-        {
-            logger.Log(LogType.Warning, message, context);
-        }
-        public static void LogWarningFormat(this ILogger logger, string format, params object[] args)
-        {
-            logger.LogFormat(LogType.Warning, format, args);
-        }
-        public static void LogWarningFormat(this ILogger logger, Object context, string format, params object[] args)
-        {
-            logger.LogFormat(LogType.Warning, context, format, args);
+                InternalAssert(context, msg, args);
         }
 
 
-        public static void Log(this ILogger logger, object message)
+        public void Log(string msg)
         {
-            logger.Log(LogType.Log, message);
+            InternalLog(null, msg, System.Array.Empty<object>());
         }
-        public static void Log(this ILogger logger, string message, Object context)
+
+        public void Log(string msg, UnityEngine.Object context)
         {
-            logger.Log(LogType.Log, (object)message, context);
+            InternalLog(null, msg, System.Array.Empty<object>());
         }
-        public static void Log(this ILogger logger, object message, Object context)
+
+        public void LogFormat(string msg, params object[] args)
         {
-            logger.Log(LogType.Log, message, context);
+            InternalLog(null, msg, args);
         }
-        public static void LogFormat(this ILogger logger, string format, params object[] args)
+
+        public void LogFormat(UnityEngine.Object context, string msg, params object[] args)
         {
-            logger.LogFormat(LogType.Log, format, args);
-        }
-        public static void LogFormat(this ILogger logger, Object context, string format, params object[] args)
-        {
-            logger.LogFormat(LogType.Log, context, format, args);
+            InternalLog(context, msg, args);
         }
 
 
+        public void LogWarning(string msg)
+        {
+            InternalWarning(null, msg, System.Array.Empty<object>());
+        }
 
-        public static bool LogEnabled(this ILogger logger) => logger.IsLogTypeAllowed(LogType.Log);
+        public void LogWarning(string msg, UnityEngine.Object context)
+        {
+            InternalWarning(context, msg, System.Array.Empty<object>());
+        }
+
+        public void LogWarningFormat(string msg, params object[] args)
+        {
+            InternalWarning(null, msg, args);
+        }
+
+        public void LogWarningFormat(UnityEngine.Object context, string msg, params object[] args)
+        {
+            InternalWarning(context, msg, args);
+        }
+
+
+        public void LogError(string msg)
+        {
+            InternalError(null, msg, System.Array.Empty<object>());
+        }
+
+        public void LogError(string msg, UnityEngine.Object context)
+        {
+            InternalError(context, msg, System.Array.Empty<object>());
+        }
+
+        public void LogErrorFormat(string msg, params object[] args)
+        {
+            InternalError(null, msg, args);
+        }
+
+        public void LogErrorFormat(UnityEngine.Object context, string msg, params object[] args)
+        {
+            InternalError(context, msg, args);
+        }
+
+        public void LogException(Exception exception, UnityEngine.Object context = null)
+        {
+            logHandler.LogException(exception, context);
+        }
     }
 }

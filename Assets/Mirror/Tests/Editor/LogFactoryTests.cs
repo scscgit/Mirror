@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+using System;
 using NSubstitute;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.TestTools;
 
 namespace Mirror.Tests
 {
@@ -48,7 +46,19 @@ namespace Mirror.Tests
             ILogHandler mockHandler = Substitute.For<ILogHandler>();
             logger.logHandler = mockHandler;
             logger.Log("This message be logged");
-            mockHandler.Received().LogFormat(LogType.Log, null, "{0}", "This message be logged");
+            mockHandler.Received(1).LogFormat(LogType.Log, null, "This message be logged", Array.Empty<object>());
+        }
+
+        [Test]
+        public void LogDebugFullFormat()
+        {
+            IMirrorLogger logger = LogFactory.GetLogger<LogFactoryTests>();
+            logger.filterLogType = LogType.Log;
+
+            ILogHandler mockHandler = Substitute.For<ILogHandler>();
+            logger.logHandler = mockHandler;
+            logger.LogFormat("This message be logged {0}", 20);
+            mockHandler.Received(1).LogFormat(LogType.Log, null, "This message be logged {0}", new object[] { 20 });
         }
     }
 }

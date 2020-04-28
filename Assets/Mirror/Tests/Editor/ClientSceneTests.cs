@@ -50,6 +50,15 @@ namespace Mirror.Tests
             invalidPrefab = null;
         }
 
+        [Test]
+        [Ignore("Not Implemented")]
+        public void PrepareToSpawnSceneObjects()
+        {
+            // Finds All inactive Network Identities In Scene With SceneIds
+            // ClearsExistingDictionary
+            ClientScene.PrepareToSpawnSceneObjects();
+        }
+
 
         [Test]
         public void GetPrefab_ReturnsFalseForEmptyGuid()
@@ -102,6 +111,46 @@ namespace Mirror.Tests
 
             NetworkIdentity networkID = prefab.GetComponent<NetworkIdentity>();
             Assert.AreEqual(networkID.assetId, validPrefabGuid);
+        }
+
+
+        [Test]
+        [Ignore("Not Implemented")]
+        public void RegisterPrefab()
+        {
+            // overloads
+            // RegisterPrefab(GameObject prefab)
+            // RegisterPrefab(GameObject prefab, SpawnDelegate spawnHandler, UnSpawnDelegate unspawnHandler)
+            // RegisterPrefab(GameObject prefab, SpawnHandlerDelegate spawnHandler, UnSpawnDelegate unspawnHandler)
+            // RegisterPrefab(GameObject prefab, Guid newAssetId)
+
+
+            // Adds Prefab To Prefab Dictionary
+            // gives errors when...
+            //   prefab is null
+            //   prefab does not have NetworkIdentity
+            // gives warning when...
+            //   prefab has multiple prefab does not have NetworkIdentity
+            //   assetId is already being used by different prefab/handler
+            ClientScene.RegisterPrefab(null);
+
+            // Sets newAssetId
+            // gives warning when...
+            //   assetId is already being used by different prefab/handler
+            ClientScene.RegisterPrefab(null, new Guid());
+
+            // Adds Delegate to spawnHandlers dictionary
+            // Adds Delegate to unspawnHandlers dictionary
+            // gives errors when...
+            //   prefab is null
+            //   prefab does not have NetworkIdentity
+            //   spawnHandler is null
+            //   unspawnHandler is null
+            //   assetId is empty
+            // gives warning when...
+            //   assetId is already being used by different prefab/handler
+            ClientScene.RegisterPrefab(null, new SpawnDelegate((x, y) => null), new UnSpawnDelegate((x) => { }));
+            ClientScene.RegisterPrefab(null, new SpawnHandlerDelegate((x) => null), new UnSpawnDelegate((x) => { }));
         }
 
 
@@ -245,6 +294,22 @@ namespace Mirror.Tests
             ClientScene.RegisterSpawnHandler(guid, spawnHandler, unspawnHandler);
         }
 
+        [Test]
+        public void RegisterSpawnHandler_SpawnDelegate_WarningWhenHandlerForGuidALreadyExists()
+        {
+            Guid guid = Guid.NewGuid();
+            SpawnDelegate spawnHandler = new SpawnDelegate((x, y) => null);
+            UnSpawnDelegate unspawnHandler = new UnSpawnDelegate(x => { });
+
+            ClientScene.RegisterSpawnHandler(guid, spawnHandler, unspawnHandler);
+
+            SpawnDelegate spawnHandler2 = new SpawnDelegate((x, y) => new GameObject());
+            UnSpawnDelegate unspawnHandler2 = new UnSpawnDelegate(x => UnityEngine.Object.Destroy(x));
+
+            LogAssert.Expect(LogType.Warning, $"Replacing existing spawnHandlers for {guid}.");
+            ClientScene.RegisterSpawnHandler(guid, spawnHandler2, unspawnHandler2);
+        }
+
 
         [Test]
         public void RegisterSpawnHandler_SpawnHandlerDelegate_AddsHandlerToSpawnHandlers()
@@ -303,6 +368,22 @@ namespace Mirror.Tests
 
             LogAssert.Expect(LogType.Error, "Can not Register SpawnHandler for empty Guid");
             ClientScene.RegisterSpawnHandler(guid, spawnHandler, unspawnHandler);
+        }
+
+        [Test]
+        public void RegisterSpawnHandler_SpawnHandlerDelegate_WarningWhenHandlerForGuidALreadyExists()
+        {
+            Guid guid = Guid.NewGuid();
+            SpawnHandlerDelegate spawnHandler = new SpawnHandlerDelegate(x => null);
+            UnSpawnDelegate unspawnHandler = new UnSpawnDelegate(x => { });
+
+            ClientScene.RegisterSpawnHandler(guid, spawnHandler, unspawnHandler);
+
+            SpawnHandlerDelegate spawnHandler2 = new SpawnHandlerDelegate(x => new GameObject());
+            UnSpawnDelegate unspawnHandler2 = new UnSpawnDelegate(x => UnityEngine.Object.Destroy(x));
+
+            LogAssert.Expect(LogType.Warning, $"Replacing existing spawnHandlers for {guid}.");
+            ClientScene.RegisterSpawnHandler(guid, spawnHandler2, unspawnHandler2);
         }
 
 
@@ -394,6 +475,36 @@ namespace Mirror.Tests
             Assert.IsEmpty(prefabs);
             Assert.IsEmpty(spawnHandlers);
             Assert.IsEmpty(unspawnHandlers);
+        }
+
+
+        [Test]
+        [Ignore("Not Implemented")]
+        public void DestroyAllClientObjects()
+        {
+            // Destroys all NetworkIdentity prefabs in scene
+            // Disables all NetworkIdentity scene objects in scene
+            // Calls unspawnHandler instead of Destroy/Disable (if one exists)
+            ClientScene.DestroyAllClientObjects();
+        }
+
+
+
+        [Test]
+        [Ignore("Not Implemented")]
+        public void OnSpawn()
+        {
+            // Applies Payload Correctly
+            // Applies Payload to existing object (if one exists
+            // Spawns Prefab from prefab Dictionary
+            // Spawns Prefab from Handler
+            // Spawns Scene object from spawnableObjects Dictionary
+            // gives errors when...
+            //   guid and sceneId is empty
+            //   cant find prefab/handler with assetId
+            //   cant find object with sceneId
+            //   failed to spawn prefab
+            ClientScene.OnSpawn(new SpawnMessage());
         }
     }
 }

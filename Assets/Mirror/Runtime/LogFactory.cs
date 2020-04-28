@@ -43,6 +43,12 @@ namespace Mirror
             logger.LogError(null, message);
         }
 
+        public static void Assert(this ILogger logger, bool condition, string message)
+        {
+            if (!condition)
+                logger.Log(LogType.Assert, message);
+        }
+
         public static void LogWarning(this ILogger logger, object message)
         {
             logger.LogWarning(null, message);

@@ -16,7 +16,7 @@ namespace Mirror
     /// </remarks>
     public static class NetworkServer
     {
-        static readonly ILogger logger = LogFactory.GetLogger(typeof(NetworkServer));
+        static readonly IMirrorLogger logger = LogFactory.GetLogger(typeof(NetworkServer));
 
         static bool initialized;
         static int maxConnections;

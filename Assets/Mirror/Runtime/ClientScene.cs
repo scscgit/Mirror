@@ -16,7 +16,7 @@ namespace Mirror
     /// </summary>
     public static class ClientScene
     {
-        static readonly ILogger logger = LogFactory.GetLogger(typeof(ClientScene));
+        static readonly IMirrorLogger logger = LogFactory.GetLogger(typeof(ClientScene));
 
         static bool isSpawnFinished;
 

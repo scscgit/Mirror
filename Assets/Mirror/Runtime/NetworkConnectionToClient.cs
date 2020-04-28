@@ -6,7 +6,7 @@ namespace Mirror
 {
     public class NetworkConnectionToClient : NetworkConnection
     {
-        static readonly ILogger logger = LogFactory.GetLogger<NetworkConnectionToClient>();
+        static readonly IMirrorLogger logger = LogFactory.GetLogger<NetworkConnectionToClient>();
 
         public NetworkConnectionToClient(int networkConnectionId) : base(networkConnectionId) { }
 

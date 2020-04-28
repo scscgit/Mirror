@@ -5,7 +5,7 @@ namespace Mirror
 {
     public class NetworkConnectionToServer : NetworkConnection
     {
-        static readonly ILogger logger = LogFactory.GetLogger<NetworkConnectionToServer>();
+        static readonly IMirrorLogger logger = LogFactory.GetLogger<NetworkConnectionToServer>();
 
         public override string address => "";
 

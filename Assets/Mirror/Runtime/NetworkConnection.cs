@@ -16,7 +16,7 @@ namespace Mirror
     /// </remarks>
     public abstract class NetworkConnection : IDisposable
     {
-        static readonly ILogger logger = LogFactory.GetLogger<NetworkConnection>();
+        static readonly IMirrorLogger logger = LogFactory.GetLogger<NetworkConnection>();
 
         // internal so it can be tested
         internal readonly HashSet<NetworkIdentity> visList = new HashSet<NetworkIdentity>();

@@ -14,23 +14,23 @@ namespace Mirror.Tests
         [Test]
         public void SameClassSameLogger()
         {
-            ILogger logger1 = LogFactory.GetLogger<LogFactoryTests>();
-            ILogger logger2 = LogFactory.GetLogger<LogFactoryTests>();
+            IMirrorLogger logger1 = LogFactory.GetLogger<LogFactoryTests>();
+            IMirrorLogger logger2 = LogFactory.GetLogger<LogFactoryTests>();
             Assert.That(logger1, Is.SameAs(logger2));
         }
 
         [Test]
         public void DifferentClassDifferentLogger()
         {
-            ILogger logger1 = LogFactory.GetLogger<LogFactoryTests>();
-            ILogger logger2 = LogFactory.GetLogger<NetworkManager>();
+            IMirrorLogger logger1 = LogFactory.GetLogger<LogFactoryTests>();
+            IMirrorLogger logger2 = LogFactory.GetLogger<NetworkManager>();
             Assert.That(logger1, Is.Not.SameAs(logger2));
         }
 
         [Test]
         public void LogDebugIgnore()
         {
-            ILogger logger = LogFactory.GetLogger<LogFactoryTests>();
+            IMirrorLogger logger = LogFactory.GetLogger<LogFactoryTests>();
             logger.filterLogType = LogType.Warning;
 
             ILogHandler mockHandler = Substitute.For<ILogHandler>();
@@ -42,7 +42,7 @@ namespace Mirror.Tests
         [Test]
         public void LogDebugFull()
         {
-            ILogger logger = LogFactory.GetLogger<LogFactoryTests>();
+            IMirrorLogger logger = LogFactory.GetLogger<LogFactoryTests>();
             logger.filterLogType = LogType.Log;
 
             ILogHandler mockHandler = Substitute.For<ILogHandler>();

@@ -16,16 +16,16 @@ namespace Mirror
             EditorGUILayout.EndVertical();
 
             EditorGUILayout.BeginVertical(EditorStyles.inspectorDefaultMargins);
-            foreach (KeyValuePair<string, ILogger> item in LogFactory.loggers)
+            foreach (KeyValuePair<string, IMirrorLogger> item in LogFactory.loggers)
             {
                 DrawLoggerField(item);
             }
             EditorGUILayout.EndVertical();
         }
 
-        static void DrawLoggerField(KeyValuePair<string, ILogger> item)
+        static void DrawLoggerField(KeyValuePair<string, IMirrorLogger> item)
         {
-            ILogger logger = item.Value;
+            IMirrorLogger logger = item.Value;
             string name = item.Key;
 
             logger.filterLogType = (LogType)EditorGUILayout.EnumPopup(new GUIContent(name), logger.filterLogType);

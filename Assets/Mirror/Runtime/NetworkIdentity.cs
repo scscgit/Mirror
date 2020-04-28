@@ -46,7 +46,7 @@ namespace Mirror
     [HelpURL("https://mirror-networking.com/docs/Components/NetworkIdentity.html")]
     public sealed class NetworkIdentity : MonoBehaviour
     {
-        static readonly ILogger logger = LogFactory.GetLogger<NetworkIdentity>();
+        static readonly IMirrorLogger logger = LogFactory.GetLogger<NetworkIdentity>();
 
         // configuration
         NetworkBehaviour[] networkBehavioursCache;

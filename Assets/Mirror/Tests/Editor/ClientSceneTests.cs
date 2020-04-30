@@ -120,45 +120,36 @@ namespace Mirror.Tests
             Assert.AreEqual(networkID.assetId, validPrefabGuid);
         }
 
+        [Test] [Ignore("Not Implemented")] public void RegisterPrefab_Prefab_AddsPrefabToDictionary() { }
+        [Test] [Ignore("Not Implemented")] public void RegisterPrefab_Prefab_ErrorForNullPrefab() { }
+        [Test] [Ignore("Not Implemented")] public void RegisterPrefab_Prefab_ErrorForPrefabWithoutNetworkIdentity() { }
+        [Test] [Ignore("Not Implemented")] public void RegisterPrefab_Prefab_ErrorForEmptyGuid() { }
+        [Test] [Ignore("Not Implemented")] public void RegisterPrefab_Prefab_WarningForNetworkIdentityInChildren() { }
+        [Test] [Ignore("Not Implemented")] public void RegisterPrefab_Prefab_WarningForAssetIdAlreadyExisting() { }
 
-        [Test]
-        [Ignore("Not Implemented")]
-        public void RegisterPrefab()
-        {
-            // overloads
-            // RegisterPrefab(GameObject prefab)
-            // RegisterPrefab(GameObject prefab, SpawnDelegate spawnHandler, UnSpawnDelegate unspawnHandler)
-            // RegisterPrefab(GameObject prefab, SpawnHandlerDelegate spawnHandler, UnSpawnDelegate unspawnHandler)
-            // RegisterPrefab(GameObject prefab, Guid newAssetId)
+        [Test] [Ignore("Not Implemented")] public void RegisterPrefab_PrefabNewGuid_AddsPrefabToDictionary() { }
+        [Test] [Ignore("Not Implemented")] public void RegisterPrefab_PrefabNewGuid_ErrorForNullPrefab() { }
+        [Test] [Ignore("Not Implemented")] public void RegisterPrefab_PrefabNewGuid_ErrorForPrefabWithoutNetworkIdentity() { }
+        [Test] [Ignore("Not Implemented")] public void RegisterPrefab_PrefabNewGuid_ErrorForEmptyGuid() { }
+        [Test] [Ignore("Not Implemented")] public void RegisterPrefab_PrefabNewGuid_WarningForNetworkIdentityInChildren() { }
+        [Test] [Ignore("Not Implemented")] public void RegisterPrefab_PrefabNewGuid_WarningForAssetIdAlreadyExisting() { }
 
+        [Test] [Ignore("Not Implemented")] public void RegisterPrefab_SpawnDelegate_AddsHandlerToSpawnHandlers() { }
+        [Test] [Ignore("Not Implemented")] public void RegisterPrefab_SpawnDelegate_AddsHandlerToSpawnHandlersWithCorrectArguments() { }
+        [Test] [Ignore("Not Implemented")] public void RegisterPrefab_SpawnDelegate_ErrorWhenPrefabIsNull() { }
+        [Test] [Ignore("Not Implemented")] public void RegisterPrefab_SpawnDelegate_ErrorForPrefabWithoutNetworkIdentity() { }
+        [Test] [Ignore("Not Implemented")] public void RegisterPrefab_SpawnDelegate_ErrorForEmptyGuid() { }
+        [Test] [Ignore("Not Implemented")] public void RegisterPrefab_SpawnDelegate_ErrorWhenSpawnHandlerIsNull() { }
+        [Test] [Ignore("Not Implemented")] public void RegisterPrefab_SpawnDelegate_ErrorWhenUnSpawnHandlerIsNull() { }
+        [Test] [Ignore("Not Implemented")] public void RegisterPrefab_SpawnDelegate_WarningWhenHandlerForGuidALreadyExists() { }
 
-            // Adds Prefab To Prefab Dictionary
-            // gives errors when...
-            //   prefab is null
-            //   prefab does not have NetworkIdentity
-            // gives warning when...
-            //   prefab has multiple prefab does not have NetworkIdentity
-            //   assetId is already being used by different prefab/handler
-            ClientScene.RegisterPrefab(null);
-
-            // Sets newAssetId
-            // gives warning when...
-            //   assetId is already being used by different prefab/handler
-            ClientScene.RegisterPrefab(null, new Guid());
-
-            // Adds Delegate to spawnHandlers dictionary
-            // Adds Delegate to unspawnHandlers dictionary
-            // gives errors when...
-            //   prefab is null
-            //   prefab does not have NetworkIdentity
-            //   spawnHandler is null
-            //   unspawnHandler is null
-            //   assetId is empty
-            // gives warning when...
-            //   assetId is already being used by different prefab/handler
-            ClientScene.RegisterPrefab(null, new SpawnDelegate((x, y) => null), new UnSpawnDelegate((x) => { }));
-            ClientScene.RegisterPrefab(null, new SpawnHandlerDelegate((x) => null), new UnSpawnDelegate((x) => { }));
-        }
+        [Test] [Ignore("Not Implemented")] public void RegisterPrefab_SpawnHandleDelegate_AddsHandlerToSpawnHandlers() { }
+        [Test] [Ignore("Not Implemented")] public void RegisterPrefab_SpawnHandleDelegate_ErrorWhenPrefabIsNull() { }
+        [Test] [Ignore("Not Implemented")] public void RegisterPrefab_SpawnHandleDelegate_ErrorForPrefabWithoutNetworkIdentity() { }
+        [Test] [Ignore("Not Implemented")] public void RegisterPrefab_SpawnHandleDelegate_ErrorForEmptyGuid() { }
+        [Test] [Ignore("Not Implemented")] public void RegisterPrefab_SpawnHandleDelegate_ErrorWhenSpawnHandlerIsNull() { }
+        [Test] [Ignore("Not Implemented")] public void RegisterPrefab_SpawnHandleDelegate_ErrorWhenUnSpawnHandlerIsNull() { }
+        [Test] [Ignore("Not Implemented")] public void RegisterPrefab_SpawnHandleDelegate_WarningWhenHandlerForGuidALreadyExists() { }
 
 
         [Test]
